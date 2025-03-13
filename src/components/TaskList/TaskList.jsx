@@ -2,15 +2,13 @@ import React from "react";
 import './TaskList.css';
 import { Task } from "../Task/Task";
 
-export const TaskList = ({tasks, onChangeTasks}) => {
+export const TaskList = ({ tasks, onChangeTasks, onDelete }) => {
 
   return (
     <ul class="todo-list">
       {
-        tasks.map((taskValue, index) => 
-          
-          { return <Task onChangeTasks={onChangeTasks} value={taskValue} taskIndex={index}/>}
+        tasks.map((taskValue) => { return <Task onDelete={onDelete} onChangeTasks={onChangeTasks} value={taskValue.title} taskIndex={taskValue.id} createdAt = {taskValue.createdAt} /> }
         )}
-      </ul>
+    </ul>
   )
 } 

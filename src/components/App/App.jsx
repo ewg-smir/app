@@ -1,33 +1,44 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { NewTaskForm } from "../NewTaskForm/NewTaskForm";
 import { Footer } from "../Footer/Footer";
 import { TaskList } from "../TaskList/TaskList";
 
 export const App = () => {
-  const [searchValue, setSearchValue] = useState( '' );    
-  const [tasks, setTasks] = useState( [] ); 
+  const [tasks, setTasks] = useState([]);
+  const [taskId, setTaskId] = useState(0);
 
 
-  const handleChangeValue = (e) => {
-    setSearchValue( e.target.value);
-}
+  // const handleChangeValue = (e) => {
+  //   setSearchValue(e.target.value);
+  // }
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && searchValue.length > 0){
-      setTasks ((prev) =>  [...prev, {value:e.target.value, createdAt: new Date()}]);
-      setSearchValue('');
-    }
-}
+  const handleDeleteTask = (todoId) => {
+    setTasks((prev) => prev.filter((task) => task.id !== todoId))
+  }
 
-  
+  const handleKeyDown = (title) => {
+
+    setTasks((prev) => [...prev,
+    {
+      title: title,
+      createdAt: new Date(),
+      id: taskId,
+      done: false
+    }]);
+    setTaskId((prev) => prev + 1);
+
+  }
+  console.log(tasks)
+
+
   return (
     <section class="todoapp">
-    <NewTaskForm  value={searchValue} onKeyDown={handleKeyDown} onChange={handleChangeValue}/>
-    <TaskList onChangeTasks={setTasks} tasks={tasks} />
-    <section class="main">
-      <Footer />
+      <NewTaskForm onKeyDown={handleKeyDown} />
+      <TaskList onDelete={handleDeleteTask} onChangeTasks={setTasks} tasks={tasks} />
+      <section class="main">
+        <Footer />
+      </section>
     </section>
-  </section>
   )
 }
