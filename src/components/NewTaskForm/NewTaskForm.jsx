@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import './NewTaskForm.css';
 
-export const NewTaskForm = ({ value, onChange, onKeyDown }) => {
+export const NewTaskForm = ({ onKeyDown }) => {
   const [name, setName] = useState('');
 
   const handleKeyDown = (e) => {
@@ -12,9 +12,9 @@ export const NewTaskForm = ({ value, onChange, onKeyDown }) => {
   }
 
   return (
-    <header class="header">
+    <header className="header">
       <h1>Todos</h1>
-      <input onKeyDown={handleKeyDown} value={name} onChange={(e) => setName(e.target.value)} class="new-todo" placeholder="What needs to be done?" autofocus />
+      <input onKeyDown={handleKeyDown} value={name} onChange={(e) => setName(e.target.value)} className="new-todo" placeholder="What needs to be done?" autoFocus />
     </header>
   )
 }

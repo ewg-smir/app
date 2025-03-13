@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import './Task.css';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -12,8 +12,6 @@ export const Task = ({ value, onChangeTasks, taskIndex, onDelete, createdAt }) =
     setEditValue(e.target.value);
   }
 
-
-
   const result = formatDistanceToNow(new Date(createdAt), { addSuffix: true, includeSeconds: true, });
 
   const handleEditKeyDown = (e) => {
@@ -21,7 +19,7 @@ export const Task = ({ value, onChangeTasks, taskIndex, onDelete, createdAt }) =
       onChangeTasks((prev) => {
         const resEdit = prev.map((item, i) => {
           if (i === taskIndex) {
-            console.log(editValue)
+
             return { title: editValue, createdAt: new Date() };
           }
           return item;
@@ -38,51 +36,17 @@ export const Task = ({ value, onChangeTasks, taskIndex, onDelete, createdAt }) =
         {editActive ? 'editing' : completedActive ? 'completed' : ''}
         key={taskIndex}
       >
-        <div class="view">
-          <input onClick={() => setCompletedActive((prev) => !prev)} class="toggle" type="checkbox" />
+        <div className="view">
+          <input onClick={() => setCompletedActive((prev) => !prev)} className="toggle" type="checkbox" />
           <label>
-            <span class="description">{value}</span>
-            <span class="created"> {result} </span>
+            <span className="description">{value}</span>
+            <span className="created"> {result} </span>
           </label>
-          <button onClick={() => setEditActive((prev) => !prev)} class="icon icon-edit" ></button>
-          <button onClick={() => onDelete(taskIndex)} class="icon icon-destroy"></button>
+          <button onClick={() => setEditActive((prev) => !prev)} className="icon icon-edit" ></button>
+          <button onClick={() => onDelete(taskIndex)} className="icon icon-destroy"></button>
         </div>
-        <input type="text" class="edit" value={editValue.value} onChange={(e) => handleEditValue(e)} onKeyDown={handleEditKeyDown} />
+        <input type="text" className="edit" value={editValue.value} onChange={(e) => handleEditValue(e)} onKeyDown={handleEditKeyDown} />
       </li>
-      {/* <li class="completed">
-          <div class="view">
-            <input class="toggle" type="checkbox" />
-            <label>
-              <span class="description">{value}</span>
-              <span class="created">created 17 seconds ago</span>
-            </label>
-            <button class="icon icon-edit"></button>
-            <button class="icon icon-destroy"></button>
-          </div>
-        </li>
-        <li class="editing">
-          <div class="view">
-            <input class="toggle" type="checkbox" />
-            <label>
-              <span class="description">Editing task</span>
-              <span class="created">created 5 minutes ago</span>
-            </label>
-            <button class="icon icon-edit"></button>
-            <button class="icon icon-destroy"></button>
-          </div>
-          <input type="text" class="edit" value="Editing task" />
-        </li>
-        <li>
-          <div class="view">
-            <input class="toggle" type="checkbox" />
-            <label>
-              <span class="description">Active task</span>
-              <span class="created">created 5 minutes ago</span>
-            </label>
-            <button class="icon icon-edit"></button>
-            <button class="icon icon-destroy"></button>
-          </div>
-        </li> */}
     </>
   )
 }
