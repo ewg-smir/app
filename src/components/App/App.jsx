@@ -1,4 +1,5 @@
 // import { useState } from "react";
+import React, { Component } from "react";
 import "./App.css";
 import { NewTaskForm } from "../NewTaskForm/NewTaskForm";
 import { Footer } from "../Footer/Footer";
@@ -9,9 +10,9 @@ export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: [], 
-      taskId: 0, 
-      categoryId: 0, 
+      tasks: [],
+      taskId: 0,
+      categoryId: 0,
     };
   }
 
@@ -34,7 +35,7 @@ export class App extends Component {
           done: false,
         },
       ],
-      taskId: taskId + 1, 
+      taskId: taskId + 1,
     });
   };
 
