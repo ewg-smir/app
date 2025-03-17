@@ -1,7 +1,8 @@
 // import { useState } from "react";
-import React, { Component } from "react";
+import { Component } from "react";
 import './Task.css';
 import { formatDistanceToNow } from 'date-fns';
+import PropTypes from 'prop-types'; 
 
 
 export class Task extends Component {
@@ -76,6 +77,17 @@ export class Task extends Component {
     );
   }
 }
+
+Task.propTypes = {
+  value: PropTypes.shape({
+    id: PropTypes.number.isRequired, 
+    title: PropTypes.string.isRequired, 
+    createdAt: PropTypes.string.isRequired, 
+    done: PropTypes.bool.isRequired, 
+  }).isRequired,
+  onDelete: PropTypes.func.isRequired, 
+  onUpdateTask: PropTypes.func.isRequired, 
+};
 
 
 

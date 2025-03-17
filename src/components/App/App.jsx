@@ -1,5 +1,5 @@
 // import { useState } from "react";
-import React, { Component } from "react";
+import { Component } from "react";
 import "./App.css";
 import { NewTaskForm } from "../NewTaskForm/NewTaskForm";
 import { Footer } from "../Footer/Footer";

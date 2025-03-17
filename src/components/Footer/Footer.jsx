@@ -1,11 +1,12 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import './Footer.css';
 import { Filter } from "../Filter/Filter ";
+import PropTypes from 'prop-types';
 
 export class Footer extends Component {
   handleClearCompleted = () => {
-    const { onClearCompleted } = this.props; 
-    onClearCompleted(); 
+    const { onClearCompleted } = this.props;
+    onClearCompleted();
   };
 
   render() {
@@ -25,6 +26,13 @@ export class Footer extends Component {
     );
   }
 }
+
+Footer.propTypes = {
+  onClearCompleted: PropTypes.func.isRequired,
+  itemsCount: PropTypes.number.isRequired,
+  categoryId: PropTypes.number.isRequired,
+  setCategoryId: PropTypes.func.isRequired,
+};
 
 
 // export const Footer = ({ itemsCount, onChangeTasks, categoryId, setCategoryId }) => {

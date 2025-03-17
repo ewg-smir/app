@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import './TaskList.css';
 import { Task } from "../Task/Task";
+import PropTypes from 'prop-types'; 
 
 export class TaskList extends Component {
   render() {
@@ -27,6 +28,17 @@ export class TaskList extends Component {
     );
   }
 }
+
+
+TaskList.propTypes = {
+  tasks: PropTypes.array.isRequired, 
+  categoryId: PropTypes.number.isRequired, 
+  setCategoryId: PropTypes.func.isRequired, 
+  onDelete: PropTypes.func.isRequired, 
+  onUpdateTask: PropTypes.func.isRequired, 
+};
+
+
 
 // export const TaskList = ({ tasks, onChangeTasks, onDelete, categoryId, setCategoryId }) => {
 //   return (

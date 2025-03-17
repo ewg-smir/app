@@ -1,7 +1,7 @@
 // import { useState } from "react";
-import React, { Component } from "react";
+import { Component } from "react";
 import './NewTaskForm.css';
-
+import PropTypes from 'prop-types';
 
 export class NewTaskForm extends Component {
   constructor(props) {
@@ -30,12 +30,15 @@ export class NewTaskForm extends Component {
           onChange={this.handleChange}
           className="new-todo"
           placeholder="What needs to be done?"
-          autoFocus
         />
       </header>
     );
   }
 }
+
+NewTaskForm.propTypes = {
+  onKeyDown: PropTypes.func.isRequired, 
+};
 
 
 // export const NewTaskForm = ({ onKeyDown }) => {
