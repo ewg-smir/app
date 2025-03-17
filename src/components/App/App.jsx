@@ -10,75 +10,80 @@ export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: [], // Initialize tasks as an empty array
+      tasks: [],
       taskId: 0,
       categoryId: 0,
     };
   }
 
   handleDeleteTask = (todoId) => {
-    this.setState((prevState) => {
-      console.log("Tasks before deletion:", prevState.tasks); // Debugging
-      return {
-        tasks: prevState.tasks.filter((task) => task.id !== todoId),
-      };
-    });
+    this.setState((prevState) => ({
+      tasks: prevState.tasks.filter((task) => task.id !== todoId),
+    }));
   };
 
   handleKeyDown = (title) => {
-    const { tasks, taskId } = this.state;
-    console.log("Current tasks:", tasks); // Debugging
-
-    this.setState({
+    this.setState((prevState) => ({
       tasks: [
-        ...tasks,
+        ...prevState.tasks,
         {
           title: title,
           createdAt: new Date(),
-          id: taskId,
+          id: prevState.taskId,
           done: false,
         },
       ],
-      taskId: taskId + 1,
-    });
+      taskId: prevState.taskId + 1,
+    }));
   };
 
   setCategoryId = (categoryId) => {
     this.setState({ categoryId });
   };
 
-  setTasks = (newTasks) => {
-    console.log("New tasks:", newTasks); // Debugging
-    this.setState({ tasks: Array.isArray(newTasks) ? newTasks : [] });
+  handleUpdateTask = (updatedTask) => {
+    this.setState((prevState) => ({
+      tasks: prevState.tasks.map((task) =>
+        task.id === updatedTask.id ? updatedTask : task
+      ),
+    }));
+  };
+
+  handleClearCompleted = () => {
+    this.setState((prevState) => ({
+      tasks: prevState.tasks.filter((task) => !task.done),
+    }));
   };
 
   render() {
     const { tasks, categoryId } = this.state;
-    console.log("Tasks in render:", tasks); // Debugging
-    const itemsCount = Array.isArray(tasks) ? tasks.filter((task) => !task.done).length : 0;
+    const itemsCount = tasks.filter((task) => !task.done).length;
 
     return (
       <section className="todoapp">
         <NewTaskForm onKeyDown={this.handleKeyDown} />
         <TaskList
-          tasks={Array.isArray(tasks) ? tasks : []} // Ensure tasks is always an array
-          onChangeTasks={this.setTasks}
-          onDelete={this.handleDeleteTask}
+          itemsCount={itemsCount}
           categoryId={categoryId}
           setCategoryId={this.setCategoryId}
+          onDelete={this.handleDeleteTask}
+          onUpdateTask={this.handleUpdateTask}
+          tasks={tasks}
         />
         <section className="main">
           <Footer
             itemsCount={itemsCount}
             categoryId={categoryId}
             setCategoryId={this.setCategoryId}
-            onChangeTasks={this.setTasks}
+            onClearCompleted={this.handleClearCompleted} 
+            tasks={tasks}
           />
         </section>
       </section>
     );
   }
 }
+
 
 
 // export const App = () => {

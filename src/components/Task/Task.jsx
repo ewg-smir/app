@@ -7,11 +7,9 @@ import { formatDistanceToNow } from 'date-fns';
 export class Task extends Component {
   constructor(props) {
     super(props);
-    const { value: { title } } = props;
-
     this.state = {
       editActive: false,
-      editValue: title, 
+      editValue: this.props.value.title,
     };
   }
 
@@ -21,84 +19,65 @@ export class Task extends Component {
 
   handleEditKeyDown = (e) => {
     if (e.key === 'Enter') {
-      const { onChangeTasks, value: { id: taskIndex } } = this.props;
       const { editValue } = this.state;
+      const { value, onUpdateTask } = this.props;
 
-      onChangeTasks((prev) => {
-        const resEdit = prev.map((item, i) => {
-          if (i === taskIndex) {
-            return { ...item, title: editValue, createdAt: new Date() };
-          }
-          return item;
-        });
-        return resEdit;
-      });
+      const updatedTask = { ...value, title: editValue, createdAt: new Date() };
+      onUpdateTask(updatedTask); 
 
       this.setState({ editActive: false });
     }
   };
 
   handleCompletedActive = (e) => {
-    const { onChangeTasks, value: { id: taskIndex } } = this.props;
-
-    onChangeTasks((prev) => {
-      return prev.map((task) => {
-        if (task.id === taskIndex) {
-          return { ...task, done: e.target.checked };
-        }
-        return task;
-      });
-    });
-  };
-
-  toggleEdit = () => {
-    this.setState((prevState) => ({
-      editActive: !prevState.editActive,
-    }));
+    const { value, onUpdateTask } = this.props;
+    const updatedTask = { ...value, done: e.target.checked };
+    onUpdateTask(updatedTask); 
   };
 
   render() {
-    const { value: { createdAt, id: taskIndex, title, done }, onDelete } = this.props;
+    const { value, onDelete } = this.props;
     const { editActive, editValue } = this.state;
 
-    const result = formatDistanceToNow(new Date(createdAt), {
+    const result = formatDistanceToNow(new Date(value.createdAt), {
       addSuffix: true,
       includeSeconds: true,
     });
 
     return (
-      <li
-        className={editActive ? 'editing' : done ? 'completed' : ''}
-        key={taskIndex}
-      >
+      <li className={editActive ? 'editing' : value.done ? 'completed' : ''}>
         <div className="view">
           <input
-            checked={done}
+            checked={value.done}
             onChange={this.handleCompletedActive}
             className="toggle"
             type="checkbox"
           />
           <label>
-            <span className="description">{title}</span>
-            <span className="created"> {result} </span>
+            <span className="description">{value.title}</span>
+            <span className="created">{result}</span>
           </label>
-          <button onClick={this.toggleEdit} className="icon icon-edit"></button>
           <button
-            onClick={() => onDelete(taskIndex)}
-            className="icon icon-destroy"
+            onClick={() => this.setState({ editActive: !editActive })}
+            className="icon icon-edit"
           ></button>
+          <button onClick={() => onDelete(value.id)} className="icon icon-destroy"></button>
         </div>
-        <input
-          type="text"
-          className="edit"
-          value={editValue}
-          onChange={this.handleEditValue}
-          onKeyDown={this.handleEditKeyDown}
-        />
+        {editActive && (
+          <input
+            type="text"
+            className="edit"
+            value={editValue}
+            onChange={this.handleEditValue}
+            onKeyDown={this.handleEditKeyDown}
+          />
+        )}
       </li>
     );
   }
 }
+
+
 
 
 // export const Task = ({ value: { createdAt, id: taskIndex, title, done }, onChangeTasks, onDelete }) => {

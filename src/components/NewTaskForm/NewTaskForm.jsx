@@ -6,34 +6,27 @@ import './NewTaskForm.css';
 export class NewTaskForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      name: '', // Initialize name state
-    };
+    this.state = { title: '' };
   }
 
-  handleKeyDown = (e) => {
-    const { name } = this.state;
-    const { onKeyDown } = this.props;
+  handleChange = (e) => {
+    this.setState({ title: e.target.value });
+  };
 
-    if (e.code === 'Enter' && name.trim() !== '') {
-      onKeyDown(name.trim()); // Pass the trimmed name to the parent component
-      this.setState({ name: '' }); // Reset the input field
+  handleKeyDown = (e) => {
+    if (e.key === 'Enter' && this.state.title.trim() !== '') {
+      this.props.onKeyDown(this.state.title.trim());
+      this.setState({ title: '' });
     }
   };
 
-  handleChange = (e) => {
-    this.setState({ name: e.target.value }); // Update the state with the input value
-  };
-
   render() {
-    const { name } = this.state;
-
     return (
       <header className="header">
         <h1>Todos</h1>
         <input
           onKeyDown={this.handleKeyDown}
-          value={name}
+          value={this.state.title}
           onChange={this.handleChange}
           className="new-todo"
           placeholder="What needs to be done?"
