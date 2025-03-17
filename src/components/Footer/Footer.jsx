@@ -1,14 +1,18 @@
-import  { useState } from "react";
+
 import './Footer.css';
 import { Filter } from "../Filter/Filter ";
 
-export const Footer = () => {
-  const [categoryId, setCategoryId] = useState(0);
+export const Footer = ({ itemsCount, onChangeTasks, categoryId, setCategoryId }) => {
+
+  const handleClearCompleted = () => {
+    onChangeTasks((prev) => prev.filter((task) => !task.done));
+  }
+
   return (
     <footer className="footer">
-        <span className="todo-count">1 items left</span>
-        <Filter value ={categoryId} onClickCategory={(i) => setCategoryId(i)} />
-        <button className="clear-completed">Clear completed</button>
-      </footer>
+      <span className="todo-count">{itemsCount} items left</span>
+      <Filter onChangeTasks={onChangeTasks} value={categoryId} onClickCategory={(i) => setCategoryId(i)} />
+      <button onClick={handleClearCompleted} className="clear-completed">Clear completed</button>
+    </footer>
   )
 } 
