@@ -22,6 +22,7 @@ export const Footer = ({ itemsCount, onChangeTasks, categoryId, setCategoryId })
 
 Footer.propTypes = {
   onClearCompleted: PropTypes.func.isRequired,
+  onChangeTasks: PropTypes.func.isRequired,
   itemsCount: PropTypes.number.isRequired,
   categoryId: PropTypes.number.isRequired,
   setCategoryId: PropTypes.func.isRequired,

@@ -1,6 +1,6 @@
 import './TaskList.css';
 import { Task } from "../Task/Task";
-import PropTypes from 'prop-types'; 
+import PropTypes from 'prop-types';
 
 
 export const TaskList = ({ tasks, onChangeTasks, onDelete, categoryId, setCategoryId }) => {
@@ -26,14 +26,15 @@ export const TaskList = ({ tasks, onChangeTasks, onDelete, categoryId, setCatego
           )}
     </ul>
   )
-} 
+}
 
 
 TaskList.propTypes = {
-  tasks: PropTypes.array.isRequired, 
-  categoryId: PropTypes.number.isRequired, 
-  setCategoryId: PropTypes.func.isRequired, 
-  onDelete: PropTypes.func.isRequired, 
-  onUpdateTask: PropTypes.func.isRequired, 
+  tasks: PropTypes.array.isRequired,
+  categoryId: PropTypes.number.isRequired,
+  setCategoryId: PropTypes.func.isRequired,
+  onChangeTasks: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onUpdateTask: PropTypes.func.isRequired,
 };
 

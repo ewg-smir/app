@@ -1,11 +1,10 @@
 import { useState } from "react";
 import './Task.css';
 import { formatDistanceToNow } from 'date-fns';
-import PropTypes from 'prop-types'; 
+import PropTypes from 'prop-types';
+import { Timer } from "../Timer/Timer";
 
-
-
-export const Task = ({ value: { createdAt, id: taskIndex, title, done }, onChangeTasks, onDelete }) => {
+export const Task = ({ value: { createdAt, id: taskIndex, title, done,  sec, min, isActive }, onChangeTasks, onDelete }) => {
 
   const [editActive, setEditActive] = useState(false);
   const [editValue, setEditValue] = useState(title);
@@ -21,8 +20,8 @@ export const Task = ({ value: { createdAt, id: taskIndex, title, done }, onChang
       onChangeTasks((prev) => {
         const resEdit = prev.map((item, i) => {
           if (i === taskIndex) {
-
-            return { title: editValue, createdAt: new Date() };
+console.log({editValue, editActive})
+            return {...item, title: editValue, createdAt: new Date(), sec: Number(sec), min: Number(min) };
           }
           return item;
         })
@@ -44,6 +43,7 @@ export const Task = ({ value: { createdAt, id: taskIndex, title, done }, onChang
       })
     })
   }
+
   return (
     <>
       <li className=
@@ -53,8 +53,11 @@ export const Task = ({ value: { createdAt, id: taskIndex, title, done }, onChang
         <div className="view">
           <input checked={done} onClick={(e) => handleCompletedActive(e)} className="toggle" type="checkbox" />
           <label>
-            <span className="description">{title}</span>
-            <span className="created"> {result} </span>
+            <span className="title">{title}</span>
+            <span className="description">
+              <Timer done={done} taskIndex={taskIndex} onChangeTasks={onChangeTasks} isActive={isActive} duratuion={(min * 60 * 1000) + (sec * 1000)} />
+            </span>
+            <span className="description"> {result} </span>
           </label>
           <button onClick={() => setEditActive((prev) => !prev)} className="icon icon-edit" ></button>
           <button onClick={() => onDelete(taskIndex)} className="icon icon-destroy"></button>
@@ -68,11 +71,15 @@ export const Task = ({ value: { createdAt, id: taskIndex, title, done }, onChang
 
 Task.propTypes = {
   value: PropTypes.shape({
-    id: PropTypes.number.isRequired, 
-    title: PropTypes.string.isRequired, 
-    createdAt: PropTypes.string.isRequired, 
-    done: PropTypes.bool.isRequired, 
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
+    done: PropTypes.bool.isRequired,
+    isActive: PropTypes.bool.isRequired,
+    sec: PropTypes.number.isRequired,
+    min: PropTypes.number.isRequired,
   }).isRequired,
-  onDelete: PropTypes.func.isRequired, 
-  onUpdateTask: PropTypes.func.isRequired, 
+  onDelete: PropTypes.func.isRequired,
+  onUpdateTask: PropTypes.func.isRequired,
+  onChangeTasks: PropTypes.func.isRequired,
 };

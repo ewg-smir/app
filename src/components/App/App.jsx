@@ -18,17 +18,24 @@ export const App = () => {
     setTasks((prev) => prev.filter((task) => task.id !== todoId));
   }
 
-  const handleKeyDown = (title) => {
+
+  const handleKeyDown = ({ name, sec, min }) => {
 
     setTasks((prev) => [...prev,
     {
-      title: title,
+      title: name,
+      sec: Number(sec),
+      min: Number(min),
       createdAt: new Date(),
       id: taskId,
-      done: false
+      done: false,
+      isActive: true
     }]);
     setTaskId((prev) => prev + 1);
   }
+
+console.log({tasks})
+
 
   return (
     <section className="todoapp">

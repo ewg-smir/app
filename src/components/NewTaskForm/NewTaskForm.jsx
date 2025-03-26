@@ -1,28 +1,39 @@
 import { useState } from "react";
 import './NewTaskForm.css';
 import PropTypes from 'prop-types';
-import { Timer } from "../Timer/Timer";
 
 
 export const NewTaskForm = ({ onKeyDown }) => {
   const [name, setName] = useState('');
+  const [sec, setSec] = useState('');
+  const [min, setMin] = useState('');
+
 
   const handleKeyDown = (e) => {
     if (e.code === 'Enter' && name.trim() !== '') {
-      onKeyDown(name.trim());
+      onKeyDown({
+        name: name.trim(),
+        min,
+        sec
+      });
       setName('');
+      setMin('');
+      setSec('');
     }
   }
 
   return (
     <header className="header">
       <h1>Todos</h1>
-      <input onKeyDown={handleKeyDown} value={name} onChange={(e) => setName(e.target.value)} className="new-todo" placeholder="What needs to be done?" />
-      <Timer />
+      <form className="new-todo-form">
+        <input onKeyDown={handleKeyDown} value={name} onChange={(e) => setName(e.target.value)} className="new-todo" placeholder="Task" />
+        <input onKeyDown={handleKeyDown} value={min} onChange={(e) => setMin(e.target.value)} className="new-todo-form__timer" placeholder="Min" />
+        <input onKeyDown={handleKeyDown} value={sec} onChange={(e) => setSec(e.target.value)} className="new-todo-form__timer" placeholder="Sec" />
+      </form>
     </header>
   )
 }
 
 NewTaskForm.propTypes = {
-  onKeyDown: PropTypes.func.isRequired, 
+  onKeyDown: PropTypes.func.isRequired,
 };
