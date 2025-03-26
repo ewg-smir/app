@@ -5,9 +5,10 @@ function Timer({ duratuion, isActive, onChangeTasks, taskIndex, done }) {
   const [time, setTime] = useState(duratuion);
 
   useEffect(() => {
+    let timer;
+
     if (isActive && time !== 0) {
-      const timer = setTimeout(() => setTime((prevTime) => prevTime - 1000), 1000);
-      return () => clearTimeout(timer);
+      timer = setTimeout(() => setTime((prevTime) => prevTime - 1000), 1000);
     }
 
     // Update task time when the timer is paused or finished
@@ -24,6 +25,10 @@ function Timer({ duratuion, isActive, onChangeTasks, taskIndex, done }) {
         )
       );
     }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [time, isActive, onChangeTasks, taskIndex]);
 
   const getFormattedTime = (milliseconds) => {
