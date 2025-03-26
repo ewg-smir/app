@@ -34,8 +34,6 @@ export const App = () => {
     setTaskId((prev) => prev + 1);
   }
 
-console.log({tasks})
-
 
   return (
     <section className="todoapp">
