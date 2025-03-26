@@ -20,7 +20,6 @@ export const Task = ({ value: { createdAt, id: taskIndex, title, done,  sec, min
       onChangeTasks((prev) => {
         const resEdit = prev.map((item, i) => {
           if (i === taskIndex) {
-console.log({editValue, editActive})
             return {...item, title: editValue, createdAt: new Date(), sec: Number(sec), min: Number(min) };
           }
           return item;
