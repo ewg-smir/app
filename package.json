@@ -79,19 +79,17 @@
     "rules": {
       "react/jsx-no-target-blank": "off"
     },
-    "languageOptions": {
-      "parser": "@babel/eslint-parser",
-      "parserOptions": {
-        "ecmaVersion": 2020,
-        "ecmaFeatures": {
-          "jsx": true
-        },
-        "sourceType": "module"
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "ecmaFeatures": {
+        "jsx": true
       },
-      "globals": {
-        "node": "readonly",
-        "browser": "readonly"
-      }
+      "sourceType": "module"
+    },
+    "parser": "@babel/eslint-parser",
+    "globals": {
+      "node": "readonly",
+      "browser": "readonly"
     },
     "settings": {
       "react": {

@@ -14,15 +14,12 @@ export default [
   { ignores: ['dist'] },
   {
     files: ['**/*.{js,jsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
-        sourceType: 'module',
-      },
-      parser: babelParser,
+    parserOptions: {
+      ecmaVersion: 'latest',  // Use latest ECMAScript version
+      ecmaFeatures: { jsx: true },
+      sourceType: 'module',
     },
+    parser: babelParser,
     settings: { react: { version: '18.3' } },
     plugins: {
       react,

@@ -1,9 +1,10 @@
 import './TaskList.css';
-import { Task } from "../Task/Task";
+import React from 'react';
 import PropTypes from 'prop-types';
+import   Task  from "../Task/Task";
 
 
-export const TaskList = ({ tasks, onChangeTasks, onDelete, categoryId, setCategoryId }) => {
+function TaskList ({ tasks, onChangeTasks, onDelete, categoryId, setCategoryId }) {
   return (
     <ul className="todo-list">
       {
@@ -14,27 +15,26 @@ export const TaskList = ({ tasks, onChangeTasks, onDelete, categoryId, setCatego
           if (categoryId === 2) {
             return task.done === true;
           }
-          else {
             return true;
-          }
-        }
-
-        )
-          .map((taskValue) => {
-            return <Task setCategoryId={setCategoryId} key={taskValue.id} onDelete={onDelete} onChangeTasks={onChangeTasks} value={taskValue} />
-          }
+        })
+          .map((taskValue) => (
+              <Task setCategoryId={setCategoryId} key={taskValue.id} onDelete={onDelete} onChangeTasks={onChangeTasks} value={taskValue} />
+          )
           )}
     </ul>
   )
 }
 
+export default TaskList;
 
 TaskList.propTypes = {
-  tasks: PropTypes.array.isRequired,
+  tasks: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    done: PropTypes.bool.isRequired,
+  })).isRequired,
   categoryId: PropTypes.number.isRequired,
   setCategoryId: PropTypes.func.isRequired,
   onChangeTasks: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  onUpdateTask: PropTypes.func.isRequired,
 };
 

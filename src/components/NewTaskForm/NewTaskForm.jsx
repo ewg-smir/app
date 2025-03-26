@@ -1,9 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import './NewTaskForm.css';
 import PropTypes from 'prop-types';
 
 
-export const NewTaskForm = ({ onKeyDown }) => {
+function NewTaskForm ({ onKeyDown }) {
   const [name, setName] = useState('');
   const [sec, setSec] = useState('');
   const [min, setMin] = useState('');
@@ -33,6 +33,8 @@ export const NewTaskForm = ({ onKeyDown }) => {
     </header>
   )
 }
+
+export default NewTaskForm;
 
 NewTaskForm.propTypes = {
   onKeyDown: PropTypes.func.isRequired,

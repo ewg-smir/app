@@ -1,12 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
-import { NewTaskForm } from "../NewTaskForm/NewTaskForm";
-import { Footer } from "../Footer/Footer";
-import { TaskList } from "../TaskList/TaskList";
+import  NewTaskForm  from "../NewTaskForm/NewTaskForm";
+import  Footer  from "../Footer/Footer";
+import  TaskList  from "../TaskList/TaskList";
 
 
-
-export const App = () => {
+function App ()  {
   const [tasks, setTasks] = useState([]);
   const [taskId, setTaskId] = useState(0);
   const [categoryId, setCategoryId] = useState(0);
@@ -45,3 +44,5 @@ export const App = () => {
     </section>
   )
 }
+
+export default App;
