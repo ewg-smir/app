@@ -1,1 +1,1 @@
-app-eosin-chi.vercel.app
+app-ewg-smir-ewg-smirs-projects.vercel.app
