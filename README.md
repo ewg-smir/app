@@ -1,1 +1,1 @@
-app-eosin-chi.vercel.app
+app-timer-sigma.vercel.app
