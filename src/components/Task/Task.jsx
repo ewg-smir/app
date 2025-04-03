@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import './Task.css';
 import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
 import Timer from "../Timer/Timer";
+import  AppContext  from "../../context/AppContext";
 
-function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActive }, onChangeTasks, onDelete }) {
+function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActive } }) {
+
+  const { handleDeleteTask, setTasks } = useContext(AppContext);
 
   const [editActive, setEditActive] = useState(false);
   const [editValue, setEditValue] = useState(title);
@@ -15,9 +18,9 @@ function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActi
 
   const handleEditKeyDown = (e) => {
     if (e.key === 'Enter') {
-      onChangeTasks((prev) => {
-        const resEdit = prev.map((item, i) => {
-          if (i === taskIndex) {
+      setTasks((prev) => {
+        const resEdit = prev.map((item) => {
+          if (item.id === taskIndex) {
             return { ...item, title: editValue, createdAt: new Date(), sec: Number(sec), min: Number(min) };
           }
           return item;
@@ -28,7 +31,7 @@ function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActi
     }
   }
 
-  const handleCompletedActive = (e) => onChangeTasks((prev) =>
+  const handleCompletedActive = (e) => setTasks((prev) =>
     prev.map((task) => (task.id === taskIndex ? { ...task, done: e.target.checked } : task
     ))
   )
@@ -48,12 +51,12 @@ function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActi
         <label htmlFor={`task-checkbox-${taskIndex}`}>
           <span className="title">{title}</span>
           <span className="description">
-            <Timer done={done} taskIndex={taskIndex} onChangeTasks={onChangeTasks} isActive={isActive} duratuion={(min * 60 * 1000) + (sec * 1000)} />
+            <Timer done={done} taskIndex={taskIndex} setTasks={setTasks} isActive={isActive} duration={(min * 60 * 1000) + (sec * 1000)} />
           </span>
           <span className="description"> {result} </span>
         </label>
         <button aria-label="Edit task" onClick={() => setEditActive((prev) => !prev)} className="icon icon-edit" type="submit" />
-        <button aria-label="Delete task" onClick={() => onDelete(taskIndex)} className="icon icon-destroy" type="submit" />
+        <button aria-label="Delete task" onClick={() => handleDeleteTask(taskIndex)} className="icon icon-destroy" type="submit" />
       </div>
       <input type="text" className="edit" value={editValue} onChange={(e) => handleEditValue(e)} onKeyDown={handleEditKeyDown} />
     </li>
@@ -73,6 +76,4 @@ Task.propTypes = {
     sec: PropTypes.number.isRequired,
     min: PropTypes.number.isRequired,
   }).isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onChangeTasks: PropTypes.func.isRequired,
 };

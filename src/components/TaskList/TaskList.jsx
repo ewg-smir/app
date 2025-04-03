@@ -1,24 +1,26 @@
 import './TaskList.css';
-import React from 'react';
-import PropTypes from 'prop-types';
-import   Task  from "../Task/Task";
+import React, { useContext } from 'react';
+import Task from "../Task/Task";
+import AppContext from "../../context/AppContext";
 
+function TaskList() {
 
-function TaskList ({ tasks, onChangeTasks, onDelete, categoryId, setCategoryId }) {
+  const { tasks, categoryId } = useContext(AppContext);
+
   return (
     <ul className="todo-list">
       {
         tasks.filter((task) => {
-          if (categoryId === 1) {
+          if (categoryId === 'Active') {
             return task.done === false;
           }
-          if (categoryId === 2) {
+          if (categoryId === 'Completed') {
             return task.done === true;
           }
-            return true;
+          return true;
         })
           .map((taskValue) => (
-              <Task setCategoryId={setCategoryId} key={taskValue.id} onDelete={onDelete} onChangeTasks={onChangeTasks} value={taskValue} />
+            <Task key={taskValue.id} value={taskValue} />
           )
           )}
     </ul>
@@ -26,15 +28,3 @@ function TaskList ({ tasks, onChangeTasks, onDelete, categoryId, setCategoryId }
 }
 
 export default TaskList;
-
-TaskList.propTypes = {
-  tasks: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    done: PropTypes.bool.isRequired,
-  })).isRequired,
-  categoryId: PropTypes.number.isRequired,
-  setCategoryId: PropTypes.func.isRequired,
-  onChangeTasks: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-};
-

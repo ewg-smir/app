@@ -1,25 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './Filter .css';
-import PropTypes from 'prop-types';
+import AppContext from "../../context/AppContext";
 
 
-
-function Filter ( { value, onClickCategory } ) {
+function Filter() {
   const categories = ['All', 'Active', 'Completed'];
-  
+
+  const { categoryId, setCategoryId } = useContext(AppContext);
+
+  const handleCategoryChange = (category) => {
+    setCategoryId(category); 
+  };
+
   return (
     <ul className="filters">
-      {categories.map((categoryName, index) => 
-      <li key={categoryName} ><button type='submit' className={value === categories.indexOf(categoryName) ? 'selected' : ''}   onClick={() => onClickCategory(index)} >{categoryName}</button></li>
+      {categories.map((categoryName) =>
+        <li key={categoryName} ><button type='submit' className={categoryId === categories.indexOf(categoryName) ? 'selected' : ''}  onClick={() => handleCategoryChange(categoryName)} >{categoryName}</button></li>
       )}
-        </ul>
+    </ul>
   )
 }
 
 export default Filter;
-
-Filter.propTypes = {
-  value: PropTypes.number.isRequired,
-  onClickCategory: PropTypes.func.isRequired,
-};
-
