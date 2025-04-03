@@ -1,153 +1,79 @@
-// import { useState } from "react";
-import { Component } from "react";
+import React, { useState, useContext } from "react";
 import './Task.css';
 import { formatDistanceToNow } from 'date-fns';
-import PropTypes from 'prop-types'; 
+import PropTypes from 'prop-types';
+import Timer from "../Timer/Timer";
+import  AppContext  from "../../context/AppContext";
 
+function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActive } }) {
 
-export class Task extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      editActive: false,
-      editValue: this.props.value.title,
-    };
-  }
+  const { handleDeleteTask, setTasks } = useContext(AppContext);
 
-  handleEditValue = (e) => {
-    this.setState({ editValue: e.target.value });
-  };
+  const [editActive, setEditActive] = useState(false);
+  const [editValue, setEditValue] = useState(title);
 
-  handleEditKeyDown = (e) => {
+  const handleEditValue = (e) => setEditValue(e.target.value);
+
+  const result = formatDistanceToNow(new Date(createdAt), { addSuffix: true, includeSeconds: true, });
+
+  const handleEditKeyDown = (e) => {
     if (e.key === 'Enter') {
-      const { editValue } = this.state;
-      const { value, onUpdateTask } = this.props;
-
-      const updatedTask = { ...value, title: editValue, createdAt: new Date() };
-      onUpdateTask(updatedTask); 
-
-      this.setState({ editActive: false });
+      setTasks((prev) => {
+        const resEdit = prev.map((item) => {
+          if (item.id === taskIndex) {
+            return { ...item, title: editValue, createdAt: new Date(), sec: Number(sec), min: Number(min) };
+          }
+          return item;
+        })
+        return resEdit;
+      })
+      setEditActive(false);
     }
-  };
-
-  handleCompletedActive = (e) => {
-    const { value, onUpdateTask } = this.props;
-    const updatedTask = { ...value, done: e.target.checked };
-    onUpdateTask(updatedTask); 
-  };
-
-  render() {
-    const { value, onDelete } = this.props;
-    const { editActive, editValue } = this.state;
-
-    const result = formatDistanceToNow(new Date(value.createdAt), {
-      addSuffix: true,
-      includeSeconds: true,
-    });
-
-    return (
-      <li className={editActive ? 'editing' : value.done ? 'completed' : ''}>
-        <div className="view">
-          <input
-            checked={value.done}
-            onChange={this.handleCompletedActive}
-            className="toggle"
-            type="checkbox"
-          />
-          <label>
-            <span className="description">{value.title}</span>
-            <span className="created">{result}</span>
-          </label>
-          <button
-            onClick={() => this.setState({ editActive: !editActive })}
-            className="icon icon-edit"
-          ></button>
-          <button onClick={() => onDelete(value.id)} className="icon icon-destroy"></button>
-        </div>
-        {editActive && (
-          <input
-            type="text"
-            className="edit"
-            value={editValue}
-            onChange={this.handleEditValue}
-            onKeyDown={this.handleEditKeyDown}
-          />
-        )}
-      </li>
-    );
   }
+
+  const handleCompletedActive = (e) => setTasks((prev) =>
+    prev.map((task) => (task.id === taskIndex ? { ...task, done: e.target.checked } : task
+    ))
+  )
+
+  let className = '';
+  if (editActive) {
+    className = 'editing';
+  } else if (done) {
+    className = 'completed';
+  }
+
+
+  return (
+    <li className={className}>
+      <div className="view">
+        <input id={`task-checkbox-${taskIndex}`} checked={done} onClick={(e) => handleCompletedActive(e)} className="toggle" type="checkbox" />
+        <label htmlFor={`task-checkbox-${taskIndex}`}>
+          <span className="title">{title}</span>
+          <span className="description">
+            <Timer done={done} taskIndex={taskIndex} setTasks={setTasks} isActive={isActive} duration={(min * 60 * 1000) + (sec * 1000)} />
+          </span>
+          <span className="description"> {result} </span>
+        </label>
+        <button aria-label="Edit task" onClick={() => setEditActive((prev) => !prev)} className="icon icon-edit" type="submit" />
+        <button aria-label="Delete task" onClick={() => handleDeleteTask(taskIndex)} className="icon icon-destroy" type="submit" />
+      </div>
+      <input type="text" className="edit" value={editValue} onChange={(e) => handleEditValue(e)} onKeyDown={handleEditKeyDown} />
+    </li>
+  )
 }
+
+export default Task;
+
 
 Task.propTypes = {
   value: PropTypes.shape({
-    id: PropTypes.number.isRequired, 
-    title: PropTypes.string.isRequired, 
-    createdAt: PropTypes.string.isRequired, 
-    done: PropTypes.bool.isRequired, 
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
+    done: PropTypes.bool.isRequired,
+    isActive: PropTypes.bool.isRequired,
+    sec: PropTypes.number.isRequired,
+    min: PropTypes.number.isRequired,
   }).isRequired,
-  onDelete: PropTypes.func.isRequired, 
-  onUpdateTask: PropTypes.func.isRequired, 
 };
-
-
-
-
-// export const Task = ({ value: { createdAt, id: taskIndex, title, done }, onChangeTasks, onDelete }) => {
-
-//   const [editActive, setEditActive] = useState(false);
-//   const [editValue, setEditValue] = useState(title);
-
-//   const handleEditValue = (e) => {
-//     setEditValue(e.target.value);
-//   }
-
-//   const result = formatDistanceToNow(new Date(createdAt), { addSuffix: true, includeSeconds: true, });
-
-//   const handleEditKeyDown = (e) => {
-//     if (e.key === 'Enter') {
-//       onChangeTasks((prev) => {
-//         const resEdit = prev.map((item, i) => {
-//           if (i === taskIndex) {
-
-//             return { title: editValue, createdAt: new Date() };
-//           }
-//           return item;
-//         })
-//         return resEdit;
-//       })
-//       setEditActive(false);
-//     }
-//   }
-
-//   const handleCompletedActive = (e) => {
-//     onChangeTasks((prev) => {
-//       return prev.map((task) => {
-//         if (task.id === taskIndex) {
-//           return { ...task, done: e.target.checked };
-//         }
-//         else {
-//           return task;
-//         }
-//       })
-//     })
-//   }
-//   return (
-//     <>
-//       <li className=
-//         {editActive ? 'editing' : done ? 'completed' : ''}
-//         key={taskIndex}
-//       >
-//         <div className="view">
-//           <input checked={done} onClick={(e) => handleCompletedActive(e)} className="toggle" type="checkbox" />
-//           <label>
-//             <span className="description">{title}</span>
-//             <span className="created"> {result} </span>
-//           </label>
-//           <button onClick={() => setEditActive((prev) => !prev)} className="icon icon-edit" ></button>
-//           <button onClick={() => onDelete(taskIndex)} className="icon icon-destroy"></button>
-//         </div>
-//         <input type="text" className="edit" value={editValue} onChange={(e) => handleEditValue(e)} onKeyDown={handleEditKeyDown} />
-//       </li>
-//     </>
-//   )
-// }

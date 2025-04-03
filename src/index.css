@@ -45,7 +45,9 @@ body {
 	display: none;
 }
 
+
 @media screen and (-webkit-min-device-pixel-ratio:0) {
+
 	.toggle-all,
 	.todo-list li .toggle {
 		background: none;
@@ -64,4 +66,22 @@ body {
 	.filters {
 		bottom: 10px;
 	}
+}
+
+.todoapp input::-webkit-input-placeholder {
+	font-style: italic;
+	font-weight: 300;
+	color: rgba(0, 0, 0, 0.4);
+}
+
+.todoapp input::-moz-placeholder {
+	font-style: italic;
+	font-weight: 300;
+	color: rgba(0, 0, 0, 0.4);
+}
+
+.todoapp input::input-placeholder {
+	font-style: italic;
+	font-weight: 300;
+	color: rgba(0, 0, 0, 0.4);
 }

@@ -1,40 +1,24 @@
-import { Component } from "react";
+import React, { useContext } from 'react';
 import './Filter .css';
-import PropTypes from 'prop-types';
+import AppContext from "../../context/AppContext";
 
-export class Filter extends Component {
-  render() {
-    const { value, onClickCategory } = this.props;
-    const categories = ['All', 'Active', 'Completed'];
 
-    return (
-      <ul className="filters">
-        {categories.map((categoryName, index) => (
-          <li key={index} >
-            <button onClick={() => onClickCategory(index)} className={value === index ? 'selected' : ''}>
-              {categoryName}
-            </button>
-          </li>
-        ))}
-      </ul>
-    );
-  }
+function Filter() {
+  const categories = ['All', 'Active', 'Completed'];
+
+  const { categoryId, setCategoryId } = useContext(AppContext);
+
+  const handleCategoryChange = (category) => {
+    setCategoryId(category); 
+  };
+
+  return (
+    <ul className="filters">
+      {categories.map((categoryName) =>
+        <li key={categoryName} ><button type='submit' className={categoryId === categories.indexOf(categoryName) ? 'selected' : ''}  onClick={() => handleCategoryChange(categoryName)} >{categoryName}</button></li>
+      )}
+    </ul>
+  )
 }
 
-Filter.propTypes = {
-  value: PropTypes.number.isRequired,
-  onClickCategory: PropTypes.func.isRequired,
-};
-
-
-// export const Filter = ( { value, onClickCategory } ) => {
-//   const categories = ['All', 'Active', 'Completed'];
-  
-//   return (
-//     <ul className="filters">
-//       {categories.map((categoryName, index) => 
-//       <li key={index} onClick={() => onClickCategory(index)} ><button className={value === index ? 'selected' : ''} >{categoryName}</button></li>
-//       )}
-//         </ul>
-//   )
-// }
+export default Filter;

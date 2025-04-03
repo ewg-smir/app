@@ -1,122 +1,59 @@
-// import { useState } from "react";
-import { Component } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import "./App.css";
-import { NewTaskForm } from "../NewTaskForm/NewTaskForm";
-import { Footer } from "../Footer/Footer";
-import { TaskList } from "../TaskList/TaskList";
+import NewTaskForm from "../NewTaskForm/NewTaskForm";
+import Footer from "../Footer/Footer";
+import TaskList from "../TaskList/TaskList";
+
+import  AppContext  from "../../context/AppContext";
+
+function App() {
+  const [tasks, setTasks] = useState([]);
+  const [taskId, setTaskId] = useState(0);
+  const [categoryId, setCategoryId] = useState(0);
 
 
-export class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tasks: [],
-      taskId: 0,
-      categoryId: 0,
-    };
+  const itemsCount = tasks.filter((task) => !task.done).length;
+
+  const handleDeleteTask = useCallback((todoId) => {
+    setTasks((prev) => prev.filter((task) => task.id !== todoId));
+  }, []);
+
+
+  const handleKeyDown = ({ name, sec, min }) => {
+
+    setTasks((prev) => [...prev,
+    {
+      title: name,
+      sec: Number(sec),
+      min: Number(min),
+      createdAt: new Date(),
+      id: taskId,
+      done: false,
+      isActive: true
+    }]);
+    setTaskId((prev) => prev + 1);
   }
 
-  handleDeleteTask = (todoId) => {
-    this.setState((prevState) => ({
-      tasks: prevState.tasks.filter((task) => task.id !== todoId),
-    }));
-  };
+  const contextValue = useMemo(() => ({
+    itemsCount,
+    categoryId,
+    setCategoryId,
+    handleDeleteTask,
+    setTasks,
+    tasks,
+  }), [itemsCount, categoryId, handleDeleteTask, setTasks, tasks]);
 
-  handleKeyDown = (title) => {
-    this.setState((prevState) => ({
-      tasks: [
-        ...prevState.tasks,
-        {
-          title: title,
-          createdAt: new Date(),
-          id: prevState.taskId,
-          done: false,
-        },
-      ],
-      taskId: prevState.taskId + 1,
-    }));
-  };
-
-  setCategoryId = (categoryId) => {
-    this.setState({ categoryId });
-  };
-
-  handleUpdateTask = (updatedTask) => {
-    this.setState((prevState) => ({
-      tasks: prevState.tasks.map((task) =>
-        task.id === updatedTask.id ? updatedTask : task
-      ),
-    }));
-  };
-
-  handleClearCompleted = () => {
-    this.setState((prevState) => ({
-      tasks: prevState.tasks.filter((task) => !task.done),
-    }));
-  };
-
-  render() {
-    const { tasks, categoryId } = this.state;
-    const itemsCount = tasks.filter((task) => !task.done).length;
-
-    return (
-      <section className="todoapp">
-        <NewTaskForm onKeyDown={this.handleKeyDown} />
-        <TaskList
-          itemsCount={itemsCount}
-          categoryId={categoryId}
-          setCategoryId={this.setCategoryId}
-          onDelete={this.handleDeleteTask}
-          onUpdateTask={this.handleUpdateTask}
-          tasks={tasks}
-        />
+  return (
+    <section className="todoapp">
+      <AppContext.Provider value={ contextValue }>
+        <NewTaskForm onKeyDown={handleKeyDown} />
+        <TaskList />
         <section className="main">
-          <Footer
-            itemsCount={itemsCount}
-            categoryId={categoryId}
-            setCategoryId={this.setCategoryId}
-            onClearCompleted={this.handleClearCompleted} 
-            tasks={tasks}
-          />
+          <Footer />
         </section>
-      </section>
-    );
-  }
+      </AppContext.Provider>
+    </section>
+  )
 }
 
-
-
-// export const App = () => {
-//   const [tasks, setTasks] = useState([]);
-//   const [taskId, setTaskId] = useState(0);
-//   const [categoryId, setCategoryId] = useState(0);
-
-
-//   const itemsCount = tasks.filter((task) => !task.done).length;
-
-//   const handleDeleteTask = (todoId) => {
-//     setTasks((prev) => prev.filter((task) => task.id !== todoId));
-//   }
-
-//   const handleKeyDown = (title) => {
-
-//     setTasks((prev) => [...prev,
-//     {
-//       title: title,
-//       createdAt: new Date(),
-//       id: taskId,
-//       done: false
-//     }]);
-//     setTaskId((prev) => prev + 1);
-//   }
-
-//   return (
-//     <section className="todoapp">
-//       <NewTaskForm onKeyDown={handleKeyDown} />
-//       <TaskList itemsCount={itemsCount} categoryId={categoryId} setCategoryId={setCategoryId} onDelete={handleDeleteTask} onChangeTasks={setTasks} tasks={tasks} />
-//       <section className="main">
-//         <Footer itemsCount={itemsCount} categoryId={categoryId} setCategoryId={setCategoryId} onChangeTasks={setTasks} />
-//       </section>
-//     </section>
-//   )
-// }
+export default App;

@@ -1,66 +1,30 @@
-import { Component } from "react";
 import './TaskList.css';
-import { Task } from "../Task/Task";
-import PropTypes from 'prop-types'; 
+import React, { useContext } from 'react';
+import Task from "../Task/Task";
+import AppContext from "../../context/AppContext";
 
-export class TaskList extends Component {
-  render() {
-    const { tasks, categoryId, setCategoryId, onDelete, onUpdateTask } = this.props;
+function TaskList() {
 
-    return (
-      <ul className="todo-list">
-        {tasks
-          .filter((task) => {
-            if (categoryId === 1) return task.done === false;
-            if (categoryId === 2) return task.done === true;
-            return true;
-          })
+  const { tasks, categoryId } = useContext(AppContext);
+
+  return (
+    <ul className="todo-list">
+      {
+        tasks.filter((task) => {
+          if (categoryId === 'Active') {
+            return task.done === false;
+          }
+          if (categoryId === 'Completed') {
+            return task.done === true;
+          }
+          return true;
+        })
           .map((taskValue) => (
-            <Task
-              key={taskValue.id}
-              setCategoryId={setCategoryId}
-              onDelete={onDelete}
-              onUpdateTask={onUpdateTask} 
-              value={taskValue}
-            />
-          ))}
-      </ul>
-    );
-  }
+            <Task key={taskValue.id} value={taskValue} />
+          )
+          )}
+    </ul>
+  )
 }
 
-
-TaskList.propTypes = {
-  tasks: PropTypes.array.isRequired, 
-  categoryId: PropTypes.number.isRequired, 
-  setCategoryId: PropTypes.func.isRequired, 
-  onDelete: PropTypes.func.isRequired, 
-  onUpdateTask: PropTypes.func.isRequired, 
-};
-
-
-
-// export const TaskList = ({ tasks, onChangeTasks, onDelete, categoryId, setCategoryId }) => {
-//   return (
-//     <ul className="todo-list">
-//       {
-//         tasks.filter((task) => {
-//           if (categoryId === 1) {
-//             return task.done === false;
-//           }
-//           if (categoryId === 2) {
-//             return task.done === true;
-//           }
-//           else {
-//             return true;
-//           }
-//         }
-
-//         )
-//           .map((taskValue) => {
-//             return <Task setCategoryId={setCategoryId} key={taskValue.id} onDelete={onDelete} onChangeTasks={onChangeTasks} value={taskValue} />
-//           }
-//           )}
-//     </ul>
-//   )
-// } 
+export default TaskList;

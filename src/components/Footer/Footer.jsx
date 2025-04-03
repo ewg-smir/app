@@ -1,51 +1,23 @@
-import { Component } from "react";
+import React, { useContext } from 'react';
 import './Footer.css';
-import { Filter } from "../Filter/Filter ";
-import PropTypes from 'prop-types';
+import Filter from "../Filter/Filter ";
+import  AppContext  from "../../context/AppContext";
 
-export class Footer extends Component {
-  handleClearCompleted = () => {
-    const { onClearCompleted } = this.props;
-    onClearCompleted();
-  };
+function Footer() {
 
-  render() {
-    const { itemsCount, categoryId, setCategoryId } = this.props;
+  const { itemsCount, setTasks } = useContext(AppContext);
 
-    return (
-      <footer className="footer">
-        <span className="todo-count">{itemsCount} items left</span>
-        <Filter
-          value={categoryId}
-          onClickCategory={(i) => setCategoryId(i)}
-        />
-        <button onClick={this.handleClearCompleted} className="clear-completed">
-          Clear completed
-        </button>
-      </footer>
-    );
+  const handleClearCompleted = () => {
+    setTasks((prev) => prev.filter((task) => !task.done));
   }
+
+  return (
+    <footer className="footer">
+      <span className="todo-count">{itemsCount} items left</span>
+      <Filter />
+      <button onClick={handleClearCompleted} className="clear-completed" type='submit'>Clear completed</button>
+    </footer>
+  )
 }
 
-Footer.propTypes = {
-  onClearCompleted: PropTypes.func.isRequired,
-  itemsCount: PropTypes.number.isRequired,
-  categoryId: PropTypes.number.isRequired,
-  setCategoryId: PropTypes.func.isRequired,
-};
-
-
-// export const Footer = ({ itemsCount, onChangeTasks, categoryId, setCategoryId }) => {
-
-//   const handleClearCompleted = () => {
-//     onChangeTasks((prev) => prev.filter((task) => !task.done));
-//   }
-
-//   return (
-//     <footer className="footer">
-//       <span className="todo-count">{itemsCount} items left</span>
-//       <Filter onChangeTasks={onChangeTasks} value={categoryId} onClickCategory={(i) => setCategoryId(i)} />
-//       <button onClick={handleClearCompleted} className="clear-completed">Clear completed</button>
-//     </footer>
-//   )
-// } 
+export default Footer;
