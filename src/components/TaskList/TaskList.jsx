@@ -1,30 +1,24 @@
+import React, { useContext, useMemo } from 'react';
 import './TaskList.css';
-import React, { useContext } from 'react';
 import Task from "../Task/Task";
 import AppContext from "../../context/AppContext";
 
 function TaskList() {
-
   const { tasks, categoryId } = useContext(AppContext);
+
+  const filteredTasks = useMemo(() => tasks.filter(task =>
+    (categoryId === 1 && !task.done) ||
+    (categoryId === 2 && task.done) ||
+    categoryId === 0
+  ), [tasks, categoryId]);
 
   return (
     <ul className="todo-list">
-      {
-        tasks.filter((task) => {
-          if (categoryId === 'Active') {
-            return task.done === false;
-          }
-          if (categoryId === 'Completed') {
-            return task.done === true;
-          }
-          return true;
-        })
-          .map((taskValue) => (
-            <Task key={taskValue.id} value={taskValue} />
-          )
-          )}
+      {filteredTasks.map(task => (
+        <Task key={task.id} value={task} />
+      ))}
     </ul>
-  )
+  );
 }
 
 export default TaskList;
