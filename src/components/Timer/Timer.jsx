@@ -11,7 +11,7 @@ function Timer({ duratuion, isActive, onChangeTasks, taskIndex, done }) {
       timer = setTimeout(() => setTime((prevTime) => prevTime - 1000), 1000);
     }
 
-    // Update task time when the timer is paused or finished
+
     if (!isActive || time === 0) {
       onChangeTasks((prev) =>
         prev.map((task) =>
