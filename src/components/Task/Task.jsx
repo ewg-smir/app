@@ -2,10 +2,10 @@ import React, { useState, useContext } from "react";
 import './Task.css';
 import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
-// import Timer from "../Timer/Timer";
+import Timer from "../Timer/Timer";
 import  AppContext  from "../../context/AppContext";
 
-function Task({ value: { createdAt, id: taskIndex, title, done} }) {
+function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActive } }) {
 
   const { handleDeleteTask, setTasks } = useContext(AppContext);
 
@@ -21,7 +21,7 @@ function Task({ value: { createdAt, id: taskIndex, title, done} }) {
       setTasks((prev) => {
         const resEdit = prev.map((item) => {
           if (item.id === taskIndex) {
-            return { ...item, title: editValue, createdAt: new Date() };
+            return { ...item, title: editValue, createdAt: new Date(), sec: Number(sec), min: Number(min) };
           }
           return item;
         })
@@ -49,11 +49,11 @@ function Task({ value: { createdAt, id: taskIndex, title, done} }) {
       <div className="view">
         <input id={`task-checkbox-${taskIndex}`} checked={done} onClick={(e) => handleCompletedActive(e)} className="toggle" type="checkbox" />
         <label htmlFor={`task-checkbox-${taskIndex}`}>
-          <span className="description">{title}</span>
-          {/* <span className="description">
+          <span className="title">{title}</span>
+          <span className="description">
             <Timer done={done} taskIndex={taskIndex} setTasks={setTasks} isActive={isActive} duration={(min * 60 * 1000) + (sec * 1000)} />
-          </span> */}
-          <span className="created"> {result} </span>
+          </span>
+          <span className="description"> {result} </span>
         </label>
         <button aria-label="Edit task" onClick={() => setEditActive((prev) => !prev)} className="icon icon-edit" type="submit" />
         <button aria-label="Delete task" onClick={() => handleDeleteTask(taskIndex)} className="icon icon-destroy" type="submit" />
@@ -73,5 +73,7 @@ Task.propTypes = {
     createdAt: PropTypes.string.isRequired,
     done: PropTypes.bool.isRequired,
     isActive: PropTypes.bool.isRequired,
+    sec: PropTypes.number.isRequired,
+    min: PropTypes.number.isRequired,
   }).isRequired,
 };
