@@ -19,13 +19,15 @@ function App() {
   }, []);
 
 
-  const handleKeyDown = ({ name, sec, min }) => {
+  const handleKeyDown = ({ name,
+    //  sec, min 
+    }) => {
 
     setTasks((prev) => [...prev,
     {
       title: name,
-      sec: Number(sec),
-      min: Number(min),
+      // sec: Number(sec),
+      // min: Number(min),
       createdAt: new Date(),
       id: taskId,
       done: false,
