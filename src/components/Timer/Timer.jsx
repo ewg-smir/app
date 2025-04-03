@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 
-function Timer({ duratuion, isActive, onChangeTasks, taskIndex, done }) {
-  const [time, setTime] = useState(duratuion);
+function Timer({ duration, isActive, setTasks, taskIndex, done }) {
+  const [time, setTime] = useState(duration);
 
   useEffect(() => {
     let timer;
@@ -11,9 +11,8 @@ function Timer({ duratuion, isActive, onChangeTasks, taskIndex, done }) {
       timer = setTimeout(() => setTime((prevTime) => prevTime - 1000), 1000);
     }
 
-
     if (!isActive || time === 0) {
-      onChangeTasks((prev) =>
+      setTasks((prev) =>
         prev.map((task) =>
           task.id === taskIndex
             ? {
@@ -29,25 +28,39 @@ function Timer({ duratuion, isActive, onChangeTasks, taskIndex, done }) {
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [time, isActive, onChangeTasks, taskIndex]);
+  }, [time, isActive, setTasks, taskIndex]);
 
   const getFormattedTime = (milliseconds) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const totalMinutes = Math.floor(totalSeconds / 60);
+    const totalHours = Math.floor(totalMinutes / 60);
+    const totalDays = Math.floor(totalHours / 24);
 
     let seconds = totalSeconds % 60;
     let minutes = totalMinutes % 60;
+    let hours = totalHours % 24;
     if (seconds < 10) seconds = `0${seconds}`;
     if (minutes < 10) minutes = `0${minutes}`;
-    if (done || time === 0) {
-      seconds = '00';
-      minutes = '00';
+    if (hours < 10) hours = `0${hours}`;
+
+
+    let timeString = `${minutes}:${seconds}`;
+
+    if (totalDays > 0) {
+      timeString = `${totalDays}d ${hours}:${timeString}`;
+    } else if (totalHours > 0) {
+      timeString = `${hours}:${timeString}`;
     }
-    return `${minutes}: ${seconds}`;
+
+    if (done || time === 0) {
+      timeString = '00:00';
+    }
+
+    return timeString;
   };
 
   const handleChangeActive = (status) => {
-    onChangeTasks((prev) =>
+    setTasks((prev) =>
       prev.map((task) =>
         task.id === taskIndex ? { ...task, isActive: status } : task
       )
@@ -76,9 +89,9 @@ function Timer({ duratuion, isActive, onChangeTasks, taskIndex, done }) {
 export default Timer;
 
 Timer.propTypes = {
-  onChangeTasks: PropTypes.func.isRequired,
+  setTasks: PropTypes.func.isRequired,
   done: PropTypes.bool.isRequired,
   isActive: PropTypes.bool.isRequired,
   taskIndex: PropTypes.number.isRequired,
-  duratuion: PropTypes.number.isRequired,
+  duration: PropTypes.number.isRequired,
 };

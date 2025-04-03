@@ -3,7 +3,7 @@ import './NewTaskForm.css';
 import PropTypes from 'prop-types';
 
 
-function NewTaskForm ({ onKeyDown }) {
+function NewTaskForm({ onKeyDown }) {
   const [name, setName] = useState('');
   const [sec, setSec] = useState('');
   const [min, setMin] = useState('');

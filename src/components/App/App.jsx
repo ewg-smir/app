@@ -1,48 +1,62 @@
-import React, { useState } from "react";
+
+import React, { useState, useMemo, useCallback } from "react";
 import "./App.css";
-import  NewTaskForm  from "../NewTaskForm/NewTaskForm";
-import  Footer  from "../Footer/Footer";
-import  TaskList  from "../TaskList/TaskList";
+import NewTaskForm from "../NewTaskForm/NewTaskForm";
+import Footer from "../Footer/Footer";
+import TaskList from "../TaskList/TaskList";
 
+import AppContext from "../../context/AppContext";
 
-function App ()  {
+function App() {
   const [tasks, setTasks] = useState([]);
   const [taskId, setTaskId] = useState(0);
-  const [categoryId, setCategoryId] = useState(0);
-
+  const [categoryId, setCategoryId] = useState('All');
 
   const itemsCount = tasks.filter((task) => !task.done).length;
 
-  const handleDeleteTask = (todoId) => {
+  const handleDeleteTask = useCallback((todoId) => {
     setTasks((prev) => prev.filter((task) => task.id !== todoId));
-  }
-
+  }, []);
 
   const handleKeyDown = ({ name, sec, min }) => {
+    setTasks((prev) => [
+      ...prev,
+      {
+        title: name,
+        createdAt: new Date(),
+        id: taskId,
+        done: false,
+        sec: Number(sec),
+        min: Number(min),
+        isActive: true,
+      },
+    ]);
+    setTaskId((prev) => prev + 1); 
+  };
 
-    setTasks((prev) => [...prev,
-    {
-      title: name,
-      sec: Number(sec),
-      min: Number(min),
-      createdAt: new Date(),
-      id: taskId,
-      done: false,
-      isActive: true
-    }]);
-    setTaskId((prev) => prev + 1);
-  }
-
+  const contextValue = useMemo(
+    () => ({
+      itemsCount,
+      categoryId,
+      setCategoryId,
+      handleDeleteTask,
+      setTasks,
+      tasks,
+    }),
+    [itemsCount, categoryId, handleDeleteTask, tasks]
+  );
 
   return (
     <section className="todoapp">
-      <NewTaskForm onKeyDown={handleKeyDown} />
-      <TaskList itemsCount={itemsCount} categoryId={categoryId} setCategoryId={setCategoryId} onDelete={handleDeleteTask} onChangeTasks={setTasks} tasks={tasks} />
-      <section className="main">
-        <Footer itemsCount={itemsCount} categoryId={categoryId} setCategoryId={setCategoryId} onChangeTasks={setTasks} />
-      </section>
+      <AppContext.Provider value={contextValue}>
+        <NewTaskForm onKeyDown={handleKeyDown} />
+        <TaskList />
+        <section className="main">
+          <Footer />
+        </section>
+      </AppContext.Provider>
     </section>
-  )
+  );
 }
 
 export default App;
