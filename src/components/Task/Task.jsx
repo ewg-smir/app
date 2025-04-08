@@ -20,15 +20,20 @@ function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActi
 
   const handleEditKeyDown = (e) => {
     if (e.key === 'Enter') {
-      setTasks((prev) => {
-        const resEdit = prev.map((item) => {
+      setTasks((prev) =>
+        prev.map((item) => {
           if (item.id === taskIndex) {
-            return { ...item, title: editValue, createdAt: new Date(), sec: Number(sec), min: Number(min) };
+            return {
+              ...item,
+              title: editValue,
+              createdAt: new Date(),
+              sec: Number(sec),
+              min: Number(min),
+            };
           }
           return item;
         })
-        return resEdit;
-      })
+      );
       setEditActive(false);
     }
   }
@@ -51,6 +56,7 @@ function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActi
     }
     const handleClickOutside = (event) => {
       if (editActive && taskRef.current && !taskRef.current.contains(event.target)) {
+        setEditValue(title);
         setEditActive(false);
       }
     }
@@ -59,7 +65,7 @@ function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActi
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [editActive]);
+  }, [editActive, title]);
 
   return (
     <li className={className} ref={taskRef}>
