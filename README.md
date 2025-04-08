@@ -1,1 +1,1 @@
-app-timer-sigma.vercel.app
+timer-new-kappa.vercel.app
