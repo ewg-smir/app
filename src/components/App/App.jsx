@@ -31,7 +31,7 @@ function App() {
         isActive: true,
       },
     ]);
-    setTaskId((prev) => prev + 1); 
+    setTaskId((prev) => prev + 1);
   };
 
   const contextValue = useMemo(

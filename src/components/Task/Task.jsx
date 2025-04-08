@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import './Task.css';
 import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
@@ -11,6 +11,8 @@ function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActi
 
   const [editActive, setEditActive] = useState(false);
   const [editValue, setEditValue] = useState(title);
+  const inputRef = useRef(null);
+  const taskRef = useRef(null);
 
   const handleEditValue = (e) => setEditValue(e.target.value);
 
@@ -43,9 +45,24 @@ function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActi
     className = 'completed';
   }
 
+  useEffect(() => {
+    if (editActive) {
+      inputRef.current?.focus();
+    }
+    const handleClickOutside = (event) => {
+      if (editActive && taskRef.current && !taskRef.current.contains(event.target)) {
+        setEditActive(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [editActive]);
 
   return (
-    <li className={className}>
+    <li className={className} ref={taskRef}>
       <div className="view">
         <input id={`task-checkbox-${taskIndex}`} checked={done} onClick={(e) => handleCompletedActive(e)} className="toggle" type="checkbox" />
         <label htmlFor={`task-checkbox-${taskIndex}`}>
@@ -58,7 +75,7 @@ function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActi
         <button aria-label="Edit task" onClick={() => setEditActive((prev) => !prev)} className="icon icon-edit" type="submit" />
         <button aria-label="Delete task" onClick={() => handleDeleteTask(taskIndex)} className="icon icon-destroy" type="submit" />
       </div>
-      <input type="text" className="edit" value={editValue} onChange={(e) => handleEditValue(e)} onKeyDown={handleEditKeyDown} />
+      <input ref={inputRef} type="text" className="edit" value={editValue} onChange={(e) => handleEditValue(e)} onKeyDown={handleEditKeyDown} />
     </li>
   )
 }
