@@ -1,2 +1,2 @@
 
-hooooook-ewg-smirs-projects.vercel.app
+hokuk-ewg-smirs-projects.vercel.app
