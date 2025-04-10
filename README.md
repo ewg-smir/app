@@ -1,2 +1,1 @@
-
-hokuk-ewg-smirs-projects.vercel.app
+kkkkkk-omega.vercel.app
