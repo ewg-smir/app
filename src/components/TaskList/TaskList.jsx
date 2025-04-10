@@ -1,6 +1,5 @@
-
-import './TaskList.css';
 import React, { useContext, useMemo } from 'react';
+import './TaskList.css';
 import Task from "../Task/Task";
 import AppContext from "../../context/AppContext";
 
@@ -12,11 +11,11 @@ function TaskList() {
     (categoryId === 'Completed' && task.done) ||
     categoryId === 'All'
   ), [tasks, categoryId]);
-  console.log({ filteredTasks, categoryId, tasks })
+
   return (
     <ul className="todo-list">
-      {filteredTasks.map((taskValue) => (
-        <Task key={taskValue.id} value={taskValue} />
+      {filteredTasks.map((task) => (
+        <Task key={task.id} value={task} />
       ))}
     </ul>
   );

@@ -1,34 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import PropTypes from 'prop-types';
 
-function Timer({ duration, isActive, setTasks, taskIndex, done }) {
-  const [time, setTime] = useState(duration);
-
+function Timer({ duration, isActive, taskIndex, done, updateTaskTime, toggleTaskActive }) {
   useEffect(() => {
     let timer;
 
-    if (isActive && time !== 0) {
-      timer = setTimeout(() => setTime((prevTime) => prevTime - 1000), 1000);
-    }
-
-    if (!isActive || time === 0) {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === taskIndex
-            ? {
-              ...task,
-              sec: parseInt(time / 1000, 10),
-              min: parseInt(time / 60000, 10),
-            }
-            : task
-        )
-      );
+    if (isActive && !done && duration > 0) {
+      timer = setInterval(() => {
+        updateTaskTime(taskIndex, duration - 1000);
+      }, 1000);
     }
 
     return () => {
-      if (timer) clearTimeout(timer);
+      if (timer) clearInterval(timer);
     };
-  }, [time, isActive, setTasks, taskIndex]);
+  }, [isActive, duration, done, taskIndex, updateTaskTime]);
 
   const getFormattedTime = (milliseconds) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -52,19 +38,11 @@ function Timer({ duration, isActive, setTasks, taskIndex, done }) {
       timeString = `${hours}:${timeString}`;
     }
 
-    if (done || time === 0) {
+    if (done || duration === 0) {
       timeString = '00:00';
     }
 
     return timeString;
-  };
-
-  const handleChangeActive = (status) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === taskIndex ? { ...task, isActive: status } : task
-      )
-    );
   };
 
   return (
@@ -73,15 +51,17 @@ function Timer({ duration, isActive, setTasks, taskIndex, done }) {
         aria-label="Play Timer"
         className="icon icon-play"
         type="button"
-        onClick={() => handleChangeActive(true)}
+        onClick={() => toggleTaskActive(taskIndex, true)}
+        disabled={done || duration <= 0}
       />
       <button
         aria-label="Pause Timer"
         className="icon icon-pause"
         type="button"
-        onClick={() => handleChangeActive(false)}
+        onClick={() => toggleTaskActive(taskIndex, false)}
+        disabled={!isActive || done || duration <= 0}
       />
-      {getFormattedTime(time)}
+      {getFormattedTime(duration)}
     </>
   );
 }
@@ -89,9 +69,11 @@ function Timer({ duration, isActive, setTasks, taskIndex, done }) {
 export default Timer;
 
 Timer.propTypes = {
-  setTasks: PropTypes.func.isRequired,
+  updateTaskTime: PropTypes.func.isRequired,
+  toggleTaskActive: PropTypes.func.isRequired,
   done: PropTypes.bool.isRequired,
   isActive: PropTypes.bool.isRequired,
   taskIndex: PropTypes.number.isRequired,
   duration: PropTypes.number.isRequired,
+
 };

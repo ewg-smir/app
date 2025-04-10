@@ -1,9 +1,9 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 const AppContext = createContext({
   tasks: [],
   setTasks: () => {},
-  categoryId: 0,
+  categoryId: 'All',
   setCategoryId: () => {},
   handleAddTask: () => {},
   handleDeleteTask: () => {},

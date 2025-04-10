@@ -5,10 +5,8 @@ import PropTypes from 'prop-types';
 import Timer from "../Timer/Timer";
 import AppContext from "../../context/AppContext";
 
-function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActive } }) {
-
-  const { handleDeleteTask, setTasks } = useContext(AppContext);
-
+function Task({ value: { createdAt, id: taskIndex, title, done: isDone, isActive, remainingTime, sec } }) {
+  const { handleDeleteTask, toggleTaskActive, updateTaskTime, updateTaskTitle, toggleTaskDone } = useContext(AppContext);
   const [editActive, setEditActive] = useState(false);
   const [editValue, setEditValue] = useState(title);
   const inputRef = useRef(null);
@@ -16,87 +14,102 @@ function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActi
 
   const handleEditValue = (e) => setEditValue(e.target.value);
 
-  const result = formatDistanceToNow(new Date(createdAt), { addSuffix: true, includeSeconds: true, });
+  const result = formatDistanceToNow(new Date(createdAt), {
+    addSuffix: true,
+    includeSeconds: true
+  });
 
   const handleEditKeyDown = (e) => {
     if (e.key === 'Enter') {
-      setTasks((prev) =>
-        prev.map((item) => {
-          if (item.id === taskIndex) {
-            return {
-              ...item,
-              title: editValue,
-              createdAt: new Date(),
-              sec: Number(sec),
-              min: Number(min),
-            };
-          }
-          return item;
-        })
-      );
+      console.log({ editValue })
+      const newRemainingTime = Number(sec) * 1000 || remainingTime;
+      setEditValue(e.target.value);
+      updateTaskTitle({ updatedTitle: editValue, id: taskIndex })
+      updateTaskTime(taskIndex, newRemainingTime);
       setEditActive(false);
     }
+  };
+
+  const handleTaskDone = (e) => {
+    toggleTaskDone(taskIndex, e.target.checked);
   }
 
-  const handleCompletedActive = (e) => setTasks((prev) =>
-    prev.map((task) => (task.id === taskIndex ? { ...task, done: e.target.checked } : task
-    ))
-  )
 
   let className = '';
   if (editActive) {
     className = 'editing';
-  } else if (done) {
+  } else if (isDone) {
     className = 'completed';
   }
 
   useEffect(() => {
     if (editActive) {
-      inputRef.current?.focus();
+      inputRef.current?.focus(); // Фокус на поле ввода
     }
     const handleClickOutside = (event) => {
       if (editActive && taskRef.current && !taskRef.current.contains(event.target)) {
         setEditValue(title);
         setEditActive(false);
       }
-    }
+    };
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-    }
+    };
   }, [editActive, title]);
 
   return (
     <li className={className} ref={taskRef}>
       <div className="view">
-        <input id={`task-checkbox-${taskIndex}`} checked={done} onClick={(e) => handleCompletedActive(e)} className="toggle" type="checkbox" />
+        <input
+          id={`task-checkbox-${taskIndex}`}
+          checked={isDone}
+          onChange={handleTaskDone}
+          className="toggle"
+          type="checkbox"
+        />
         <label htmlFor={`task-checkbox-${taskIndex}`}>
           <span className="title">{title}</span>
           <span className="description">
-            <Timer done={done} taskIndex={taskIndex} setTasks={setTasks} isActive={isActive} duration={(min * 60 * 1000) + (sec * 1000)} />
+            <Timer
+              done={isDone}
+              taskIndex={taskIndex}
+              isActive={isActive}
+              duration={remainingTime}
+              updateTaskTime={updateTaskTime}
+              toggleTaskActive={toggleTaskActive}
+
+            />
           </span>
           <span className="description"> {result} </span>
         </label>
-        <button aria-label="Edit task" onClick={() => setEditActive((prev) => !prev)} className="icon icon-edit" type="submit" />
-        <button aria-label="Delete task" onClick={() => handleDeleteTask(taskIndex)} className="icon icon-destroy" type="submit" />
+        <button type="button" aria-label="Edit task" onClick={() => setEditActive(true)} className="icon icon-edit" />
+        <button type="button" aria-label="Delete task" onClick={() => handleDeleteTask(taskIndex)} className="icon icon-destroy" />
       </div>
-      <input ref={inputRef} type="text" className="edit" value={editValue} onChange={(e) => handleEditValue(e)} onKeyDown={handleEditKeyDown} />
+      <input
+        ref={inputRef}
+        type="text"
+        className="edit"
+        value={editValue}
+        onChange={handleEditValue}
+        onKeyDown={handleEditKeyDown}
+      />
     </li>
-  )
+  );
 }
-
-export default Task;
-
 
 Task.propTypes = {
   value: PropTypes.shape({
     id: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
-    createdAt: PropTypes.string.isRequired,
+    createdAt: PropTypes.instanceOf(Date).isRequired,
     done: PropTypes.bool.isRequired,
     isActive: PropTypes.bool.isRequired,
+    remainingTime: PropTypes.number.isRequired,
     sec: PropTypes.number.isRequired,
     min: PropTypes.number.isRequired,
   }).isRequired,
 };
+
+export default Task;
