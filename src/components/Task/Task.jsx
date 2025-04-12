@@ -29,6 +29,11 @@ function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActi
       })
       setEditActive(false);
     }
+  };
+
+  const handleTaskDone = (e) => {
+    
+    toggleTaskDone(taskIndex, e.target.checked);
   }
 
   const handleCompletedActive = (e) => setTasks((prev) =>
@@ -43,6 +48,22 @@ function Task({ value: { createdAt, id: taskIndex, title, done, sec, min, isActi
     className = 'completed';
   }
 
+  useEffect(() => {
+    if (editActive) {
+      inputRef.current?.focus(); // Фокус на поле ввода
+    }
+    const handleClickOutside = (event) => {
+      if (editActive && taskRef.current && !taskRef.current.contains(event.target)) {
+        setEditValue(title);
+        setEditActive(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [editActive, title]);
 
   return (
     <li className={className}>
